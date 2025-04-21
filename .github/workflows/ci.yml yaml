@@ -1,0 +1,34 @@
+name: Deploy HTML puro no GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # ou a branch principal do seu repositório
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Upload para GitHub Pages
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: .  # Aqui você pode trocar para uma pasta como "dist" se usar uma
+
+  publish:
+    needs: deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
